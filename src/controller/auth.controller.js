@@ -59,8 +59,20 @@ class AuthController {
   }
   // 获取角色列表
   async getRoleList(ctx, next) {
-    const result = await authService.getRoleListData()
+    let {offset, size} = ctx.query
+    offset = offset * 10
 
+    const result = await authService.getRoleListData(offset, size)
+
+    ctx.body = {
+      statusCode: 200,
+      message: "数据获取成功~",
+      data: result
+    }
+  }
+  // 获取角色列表总数
+  async getRoleListCount(ctx, next) {
+    const result = await authService.getRoleListCount()
     ctx.body = {
       statusCode: 200,
       message: "数据获取成功~",
@@ -73,6 +85,16 @@ class AuthController {
 
     const result = await authService.queryRoleListData(id, rolename)
 
+    ctx.body = {
+      statusCode: 200,
+      message: "数据获取成功~",
+      data: result
+    }
+  }
+  // 获取根据条件查询角色列表总数
+  async getQueryRoleListCount(ctx, next) {
+    const {id, rolename} = ctx.request.body
+    const result = await authService.getQueryRoleListCount(id, rolename)
     ctx.body = {
       statusCode: 200,
       message: "数据获取成功~",

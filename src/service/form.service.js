@@ -3,27 +3,29 @@ const connection = require('../app/database')
 const cityService = require('./city.service')
 
 const investSqlFragment = `
-SELECT 
-  invest_form.id, city.area '投放城市', suppliers.brand '供应商', put_amount '投放数量', put_time '投放时间', status '工单状态'
 FROM invest_form
-LEFT JOIN city ON invest_form.put_city = city.id
-LEFT JOIN suppliers ON invest_form.brand_name = suppliers.id
+    LEFT JOIN city ON invest_form.put_city = city.id
+    LEFT JOIN suppliers ON invest_form.brand_name = suppliers.id
+    WHERE status LIKE ? AND city.area LIKE ? AND suppliers.brand LIKE ?
 `;
 
 const repairSqlFragment = `
-SELECT 
-  repair_form.id, city.area '维修点位', suppliers.brand '供应商', repair_amount '维修数量', apply_time '申报时间', status '工单状态'
 FROM repair_form
-LEFT JOIN city ON repair_form.repair_city = city.id
-LEFT JOIN suppliers ON repair_form.brand_name = suppliers.id
+    LEFT JOIN city ON repair_form.repair_city = city.id
+    LEFT JOIN suppliers ON repair_form.brand_name = suppliers.id
+    WHERE status LIKE ? AND city.area LIKE ? AND suppliers.brand LIKE ?
 `;
 
 class FormService {
   // 查询投放表单数据
   async getInvestForm(offset, size) {
     const statement = `
-      ${investSqlFragment}
-      LIMIT ?, ?;  
+    SELECT invest_form.id, city.id 'cityid', suppliers.id 'brandid', city.area, suppliers.brand, put_amount, put_time, status
+    FROM invest_form
+    LEFT JOIN city ON city.id = invest_form.put_city
+    LEFT JOIN suppliers ON  suppliers.id = invest_form.brand_name
+    GROUP BY invest_form.id DESC
+    LIMIT ?, ?;  
     `;
     const [result] = await connection.execute(statement, [offset, size])
     return result
@@ -31,28 +33,39 @@ class FormService {
   // 查询投放表单总数
   async getInvestCount() {
     const statement = `
-      SELECT COUNT(invest_form.id) '数据总数'
-      FROM invest_form;
+    SELECT COUNT(invest_form.id) 'count'
+    FROM invest_form;
     `;
     const [result] = await connection.execute(statement)
     return result
   }
-  // 根据工单状态查询投放工单数据
-  async getStatusInvest(offset, size, status) {
+  // 根据条件查询投放工单数据
+  async queryInvestData(status, area, brand, offset, size) {
     const statement = `
-      ${investSqlFragment}
-      WHERE status = ?
-      LIMIT ?, ?;
+    SELECT invest_form.id, city.area, suppliers.brand, put_amount, put_time, status
+    ${investSqlFragment}
+    GROUP BY invest_form.id DESC
+    LIMIT ?, ?;
     `;
-    const [result] = await connection.execute(statement, [status, offset, size])
+    const [result] = await connection.execute(statement, [`%${status}%`, `%${area}%`, `%${brand}%`, offset, size])
     return result
   }
-  // 根据id更新投放工单状态
-  async updateInvestStatus(status, investId) {
+  // 获取根据条件查询投放工单数据总数
+  async getQueryInvestDataCount(status, area, brand) {
     const statement = `
-    UPDATE invest_form SET invest_form.status = ? WHERE invest_form.id = ?;
+    SELECT COUNT(invest_form.id) count
+    ${investSqlFragment}
     `;
-    const [result] = await connection.execute(statement, [status, investId])
+    const [result] = await connection.execute(statement, [`%${status}%`, `%${area}%`, `%${brand}%`])
+    return result
+  }
+
+  // 根据id更新投放工单状态
+  async updateInvestStatus(area, put_amount, status, brand, investId) {
+    const statement = `
+    UPDATE invest_form SET invest_form.status = ?, put_city = ?, put_amount = ?, brand_name = ? WHERE invest_form.id = ?;
+    `;
+    const [result] = await connection.execute(statement, [status, area, put_amount, brand, investId])
     // 更新状态后对应更新城市点位的投放数量
     await cityService.updateCityData()
     return result
@@ -81,8 +94,12 @@ class FormService {
   // 查询维修表单数据
   async getRepairForm(offset, size) {
     const statement = `
-      ${repairSqlFragment}
-      LIMIT ?, ?;
+    SELECT repair_form.id, city.area, suppliers.brand, repair_amount, apply_time, status
+    FROM repair_form
+    LEFT JOIN city ON repair_form.repair_city = city.id
+    LEFT JOIN suppliers ON repair_form.brand_name = suppliers.id
+    GROUP BY repair_form.id
+    LIMIT ?, ?;
     `;
     const [result] = await connection.execute(statement, [offset, size])
     return result
@@ -90,20 +107,30 @@ class FormService {
   // 查询维修表单总数
   async getRepairCount() {
     const statement = `
-      SELECT COUNT(repair_form.id) '数据总数'
+      SELECT COUNT(repair_form.id) 'count'
       FROM repair_form;
     `;
     const [result] = await connection.execute(statement)
     return result
   }
   // 根据维修工单状态查询工单数据
-  async getStatusRepair(offset, size, status) {
+  async queryRepairData(status, area, brand, offset, size) {
     const statement = `
-      ${repairSqlFragment}
-      WHERE status = ?
-      LIMIT ?, ?;
+    SELECT repair_form.id, city.area, suppliers.brand, repair_amount, apply_time, status
+    ${repairSqlFragment}
+    GROUP BY repair_form.id
+    LIMIT ?, ?;
     `;
-    const [result] = await connection.execute(statement, [status, offset, size])
+    const [result] = await connection.execute(statement, [`%${status}%`, `%${area}%`, `%${brand}%`, offset, size])
+    return result
+  }
+  // 获取根据维修工单状态查询工单数据总数
+  async getQueryRepairDataCount(status, area, brand) {
+    const statement = `
+    SELECT COUNT(repair_form.id) 'count'
+    ${repairSqlFragment}
+    ;`;
+    const [result] = await connection.execute(statement, [`%${status}%`, `%${area}%`, `%${brand}%`])
     return result
   }
   // 根据id更新维修工单状态

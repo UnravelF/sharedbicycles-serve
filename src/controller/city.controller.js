@@ -50,6 +50,27 @@ class CityController {
       data: result
     }
   }
+  // 获取供应商列表数据
+  async getSuppliersData(ctx, next) {
+    let {offset, size} = ctx.query
+    offset = offset * size
+    
+    const result = await cityService.getSuppliersData(offset, size)
+    ctx.body = {
+      statusCode: 200,
+      message: "数据请求成功~",
+      data: result
+    }
+  }
+  // 获取供应商列表数据总数
+  async getSuppliersCount(ctx, next) {
+    const result = await cityService.getSuppliersCount()
+    ctx.body = {
+      statusCode: 200,
+      message: "数据请求成功~",
+      data: result
+    }
+  }
 }
 
 module.exports = new CityController()

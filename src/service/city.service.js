@@ -41,6 +41,18 @@ class CityService {
     const [result] = await connection.execute(statement)
     return result
   }
+  // 获取供应商列表数据
+  async getSuppliersData(offset, size) {
+    const statement = `SELECT * FROM suppliers  LIMIT ?, ?;;`;
+    const [result] = await connection.execute(statement, [offset, size])
+    return result
+  }
+  // 获取供应商列表数据总数
+  async getSuppliersCount(){
+    const statement = `SELECT COUNT(suppliers.id) 'count' FROM suppliers;`;
+    const [result] = await connection.execute(statement)
+    return result
+  }
 }
 
 module.exports = new CityService()

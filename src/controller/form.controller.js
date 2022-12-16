@@ -5,7 +5,7 @@ class FormController {
   // 获取投放表单数据
   async getInvestFormData(ctx, next) {
     let {offset, size} = ctx.query
-    offset = offset * 10
+    offset = offset * size
 
     const result = await formService.getInvestForm(offset, size)
 
@@ -25,12 +25,17 @@ class FormController {
       data: result
     }
   }
-  // 根据工单状态获取投放工单数据
-  async getStatusInvest(ctx, next) {
-    let {offset, size, status} = ctx.query
-    offset = offset * 10
+  // 条件获取投放工单数据
+  async queryInvestData(ctx, next) {
+    let {status, area, brand} = ctx.request.body
+    let {currentPage, pageSize} = ctx.query
+    console.log(ctx.request.body)
+    console.log(ctx.query)
+    const offset = (currentPage - 1) * pageSize
+    const size = pageSize
+    console.log(offset, size)
 
-    const result = await formService.getStatusInvest(offset, size, status)
+    const result = await formService.queryInvestData(status, area, brand, offset, size)
 
     ctx.body = {
       statusCode: 200,
@@ -38,10 +43,26 @@ class FormController {
       data: result
     }
   }
+  // 获取条件获取投放工单数据总数
+  async getQueryInvestDataCount(ctx, next) {
+    let {status, area, brand} = ctx.request.body
+
+    const result = await formService.getQueryInvestDataCount(status, area, brand)
+
+    ctx.body = {
+      statusCode: 200,
+      message: "数据请求成功~",
+      data: result
+    }
+  }
+
+
   // 根据工单id修改投放工单状态
   async updateInvestStatus(ctx, next) {
     const {investId} = ctx.params
-    const {status} = ctx.request.body
+    console.log(investId)
+    const {area, put_amount, status, brand} = ctx.request.body
+    console.log(ctx.request.body)
 
     // 获取角色id
     const {role_id} = ctx.user
@@ -51,7 +72,7 @@ class FormController {
       return ctx.app.emit('error', error, ctx)
     }
 
-    const result = await formService.updateInvestStatus(status, investId)
+    const result = await formService.updateInvestStatus(area, put_amount, status, brand, investId)
     ctx.body = {
       statusCode: 200,
       message: "数据更新成功~",
@@ -60,7 +81,7 @@ class FormController {
   }
   // 新增投放工单数据
   async addInvestFormData(ctx, next) {
-    const {area, amount, status, brand} = ctx.request.body
+    const {area, put_amount, status, brand} = ctx.request.body
 
     // 获取角色id
     const {role_id} = ctx.user
@@ -70,7 +91,7 @@ class FormController {
       return ctx.app.emit('error', error, ctx)
     }
 
-    const result = await formService.addInvestFormData(area, amount, status, brand)
+    const result = await formService.addInvestFormData(area, put_amount, status, brand)
     ctx.body = {
       statusCode: 200,
       message: "数据新增成功~",
@@ -100,7 +121,8 @@ class FormController {
   // 获取维修表单数据
   async getRepairFormData(ctx, next) {
     let {offset, size} = ctx.query
-    offset = offset * 10
+    offset = offset * size
+    console.log(offset, size)
 
     const result = await formService.getRepairForm(offset, size)
 
@@ -121,11 +143,27 @@ class FormController {
     }
   }
   // 根据维修工单状态获取工单数据
-  async getStatusRepair(ctx, next) {
-    let {offset, size, status} = ctx.query
-    offset = offset * 10
+  async queryRepairData(ctx, next) {
+    let {status, area, brand} = ctx.request.body
+    let {currentPage, pageSize} = ctx.query
+    console.log(ctx.request.body)
+    console.log(ctx.query)
+    const offset = (currentPage - 1) * pageSize
+    const size = pageSize
+    console.log(offset, size)
 
-    const result = await formService.getStatusRepair(offset, size, status)
+    const result = await formService.queryRepairData(status, area, brand, offset, size)
+
+    ctx.body = {
+      statusCode: 200,
+      message: "数据请求成功~",
+      data: result
+    }
+  }
+  // 获取条件获取维修工单数据总数
+  async getQueryRepairDataCount(ctx, next) {
+    let {status, area, brand} = ctx.request.body
+    const result = await formService.getQueryRepairDataCount(status, area, brand)
 
     ctx.body = {
       statusCode: 200,

@@ -49,14 +49,27 @@ class authService {
       return result
     }
     // 获取角色列表
-    async getRoleListData() {
-      const statement = `SELECT * from role;`;
+    async getRoleListData(offset, size) {
+      const statement = `SELECT * from role LIMIT ?, ?;`;
+      const [result] = await connection.execute(statement, [offset, size])
+      return result
+    }
+    // 获取角色列表总数
+    async getRoleListCount() {
+      const statement= `SELECT COUNT(role.id) count FROM role;`;
       const [result] = await connection.execute(statement)
       return result
     }
     // 根据条件查询角色列表
     async queryRoleListData(id, rolename) {
       const statement = `SELECT * from role
+      WHERE role.rolename = ? OR role.id = ?;`;
+      const [result] = await connection.execute(statement, [rolename, id])
+      return result
+    }
+    // 获取根据条件查询角色列表总数
+    async getQueryRoleListCount(id, rolename) {
+      const statement = `SELECT COUNT(role.id) from role
       WHERE role.rolename = ? OR role.id = ?;`;
       const [result] = await connection.execute(statement, [rolename, id])
       return result
