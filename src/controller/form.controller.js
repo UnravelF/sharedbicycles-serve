@@ -60,9 +60,7 @@ class FormController {
   // 根据工单id修改投放工单状态
   async updateInvestStatus(ctx, next) {
     const {investId} = ctx.params
-    console.log(investId)
     const {area, put_amount, status, brand} = ctx.request.body
-    console.log(ctx.request.body)
 
     // 获取角色id
     const {role_id} = ctx.user
