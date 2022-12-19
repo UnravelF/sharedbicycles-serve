@@ -98,7 +98,7 @@ class FormService {
     FROM repair_form
     LEFT JOIN city ON repair_form.repair_city = city.id
     LEFT JOIN suppliers ON repair_form.brand_name = suppliers.id
-    GROUP BY repair_form.id
+    GROUP BY repair_form.id DESC
     LIMIT ?, ?;
     `;
     const [result] = await connection.execute(statement, [offset, size])

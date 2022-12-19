@@ -148,7 +148,6 @@ class FormController {
     console.log(ctx.query)
     const offset = (currentPage - 1) * pageSize
     const size = pageSize
-    console.log(offset, size)
 
     const result = await formService.queryRepairData(status, area, brand, offset, size)
 
@@ -192,6 +191,7 @@ class FormController {
   // 新增维修工单数据
   async addRepairFormData(ctx, next) {
     const {area, amount, status, brand} = ctx.request.body
+    console.log(area, amount, status, brand)
 
     // 获取角色id
     const {role_id} = ctx.user
