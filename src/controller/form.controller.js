@@ -144,8 +144,7 @@ class FormController {
   async queryRepairData(ctx, next) {
     let {status, area, brand} = ctx.request.body
     let {currentPage, pageSize} = ctx.query
-    console.log(ctx.request.body)
-    console.log(ctx.query)
+    
     const offset = (currentPage - 1) * pageSize
     const size = pageSize
 
@@ -171,7 +170,8 @@ class FormController {
   // 根据工单id修改维修工单状态
   async updateRepairStatus(ctx, next) {
     const {repairId} = ctx.params
-    const {status} = ctx.request.body
+    const {area, amount, status, brand} = ctx.request.body
+    console.log(area, amount, status, brand)
 
     // 获取角色id
     const {role_id} = ctx.user
@@ -181,7 +181,7 @@ class FormController {
       return ctx.app.emit('error', error, ctx)
     }
 
-    const result = await formService.updateRepairStatus(status, repairId)
+    const result = await formService.updateRepairStatus(status, area, brand, amount, repairId)
     ctx.body = {
       statusCode: 200,
       message: "数据更新成功~",

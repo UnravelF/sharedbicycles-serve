@@ -94,7 +94,7 @@ class FormService {
   // 查询维修表单数据
   async getRepairForm(offset, size) {
     const statement = `
-    SELECT repair_form.id, city.area, suppliers.brand, repair_amount, apply_time, status
+    SELECT repair_form.id, city.id 'cityid', suppliers.id 'brandid', city.area, suppliers.brand, repair_amount 'amount', apply_time, status
     FROM repair_form
     LEFT JOIN city ON repair_form.repair_city = city.id
     LEFT JOIN suppliers ON repair_form.brand_name = suppliers.id
@@ -116,7 +116,7 @@ class FormService {
   // 根据维修工单状态查询工单数据
   async queryRepairData(status, area, brand, offset, size) {
     const statement = `
-    SELECT repair_form.id, city.area, suppliers.brand, repair_amount, apply_time, status
+    SELECT repair_form.id, city.area, suppliers.brand, repair_amount 'amount', apply_time, status
     ${repairSqlFragment}
     GROUP BY repair_form.id
     LIMIT ?, ?;
@@ -134,11 +134,11 @@ class FormService {
     return result
   }
   // 根据id更新维修工单状态
-  async updateRepairStatus(status, repairId) {
+  async updateRepairStatus(status, area, brand, amount, repairId) {
     const statement = `
-    UPDATE repair_form SET status = ? WHERE id = ?;
+    UPDATE repair_form SET status = ?, repair_city = ?, repair_amount = ?, brand_name = ? WHERE id = ?;
     `;
-    const [result] = await connection.execute(statement, [status, repairId])
+    const [result] = await connection.execute(statement, [status, area, amount, brand, repairId])
     return result
   }
   // 新增维修工单数据

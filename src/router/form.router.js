@@ -50,7 +50,7 @@ formRouter.post('/repair/querylist', verifyAuth, queryRepairData)
 // 获取根据条件请求维修工单数据总数
 formRouter.post('/repair/querylistCount', verifyAuth, getQueryRepairDataCount)
 // 更新维修工单状态
-formRouter.patch('/repair/update/:repairId', verifyAuth, updateRepairStatus)
+formRouter.patch('/repair/:repairId', verifyAuth, updateRepairStatus)
 // 新增维修工单
 formRouter.post('/repair', verifyAuth, addRepairFormData)
 // 根据id删除维修表单数据
