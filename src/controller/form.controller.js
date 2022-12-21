@@ -29,11 +29,8 @@ class FormController {
   async queryInvestData(ctx, next) {
     let {status, area, brand} = ctx.request.body
     let {currentPage, pageSize} = ctx.query
-    console.log(ctx.request.body)
-    console.log(ctx.query)
     const offset = (currentPage - 1) * pageSize
     const size = pageSize
-    console.log(offset, size)
 
     const result = await formService.queryInvestData(status, area, brand, offset, size)
 
@@ -120,7 +117,6 @@ class FormController {
   async getRepairFormData(ctx, next) {
     let {offset, size} = ctx.query
     offset = offset * size
-    console.log(offset, size)
 
     const result = await formService.getRepairForm(offset, size)
 
@@ -190,7 +186,6 @@ class FormController {
   // 新增维修工单数据
   async addRepairFormData(ctx, next) {
     const {area, amount, status, brand} = ctx.request.body
-    console.log(area, amount, status, brand)
 
     // 获取角色id
     const {role_id} = ctx.user
