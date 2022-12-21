@@ -171,7 +171,6 @@ class FormController {
   async updateRepairStatus(ctx, next) {
     const {repairId} = ctx.params
     const {area, amount, status, brand} = ctx.request.body
-    console.log(area, amount, status, brand)
 
     // 获取角色id
     const {role_id} = ctx.user
