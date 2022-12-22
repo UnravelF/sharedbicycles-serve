@@ -7,6 +7,9 @@
 <a href="https://github.com/UnravelF/sharedbicycles-serve">
 <img src="https://img.shields.io/badge/node-14.19.1-brightgreen">
 </a>
+<a href="https://github.com/UnravelF/sharedbicycles-serve">
+<img src="https://img.shields.io/badge/mysql2-2.3.3-blue">
+</a>
 </div>
 # sharedbicycles-serve
 
