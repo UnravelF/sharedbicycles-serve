@@ -7,12 +7,16 @@ class UserController {
     
     const result = await userService.registerUser(user)
     
-    ctx.body = result
+    ctx.body = {
+      statusCode: 200,
+      message: "新增用户成功~",
+      data: result
+    }
   }
   // 获取用户列表
   async getUserList(ctx, next) {
     let {offset, size} = ctx.query
-    offset = offset * 10
+    offset = offset * size
 
     const result = await userService.getUserListData(offset, size)
     ctx.body = {
