@@ -71,6 +71,29 @@ class CityController {
       data: result
     }
   }
+  // 根据条件查询供应商数据
+  async querySuppliersData(ctx, next) {
+    const {brand} = ctx.request.body
+    let {currentPage, pageSize} = ctx.query
+    const offset = (currentPage - 1) * pageSize
+    const size = pageSize
+    const result = await cityService.querySuppliersData(brand, offset, size)
+    ctx.body = {
+      statusCode: 200,
+      message: "数据请求成功~",
+      data: result
+    }
+  }
+  // 获取根据条件查询供应商数据总数
+  async getQuerySuppliersDataCount(ctx, next) {
+    const {brand} = ctx.request.body
+    const result = await cityService.querySuppliersDataCount(brand)
+    ctx.body = {
+      statusCode: 200,
+      message: "数据请求成功~",
+      data: result
+    }
+  }
 }
 
 module.exports = new CityController()

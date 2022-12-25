@@ -53,6 +53,27 @@ class CityService {
     const [result] = await connection.execute(statement)
     return result
   }
+  // 根据条件查询供应商列表
+  async querySuppliersData(brand, offset, size) {
+    const statement = `
+    SELECT * 
+    from suppliers
+    WHERE suppliers.brand LIKE ?
+    LIMIT ?, ?;
+    `;
+    const [result] = await connection.execute(statement, [`%${brand}%`, offset, size])
+    return result
+  }
+  // 
+  async querySuppliersDataCount(brand) {
+    const statement = `
+    SELECT COUNT(suppliers.id) count
+    from suppliers
+    WHERE suppliers.brand LIKE ?;
+    `;
+    const [result] = await connection.execute(statement, [`%${brand}%`])
+    return result
+  }
 }
 
 module.exports = new CityService()
