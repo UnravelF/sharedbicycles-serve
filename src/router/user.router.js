@@ -16,7 +16,9 @@ const {
   getUserList,
   getUserListCount,
   queryUserList,
-  getQueryUserListCount
+  getQueryUserListCount,
+  updateUserInfo,
+  deleteUserInfo
 } = require('../controller/user.controller')
 
 
@@ -33,5 +35,9 @@ userRouter.get('/listCount', verifyAuth, getUserListCount)
 userRouter.post('/querylist', verifyAuth, queryUserList)
 // 获取根据条件查询用户数据总数
 userRouter.post('/querylistCount', verifyAuth, getQueryUserListCount)
+// 根据用户id编辑用户信息
+userRouter.patch('/:userId', verifyAuth, updateUserInfo)
+// 根据用户id删除用户
+userRouter.delete('/:userId', verifyAuth, deleteUserInfo)
 
 module.exports = userRouter;

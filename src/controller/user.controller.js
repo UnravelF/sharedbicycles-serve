@@ -54,6 +54,28 @@ class UserController {
       data: result
     }
   }
+  // 根据用户id更新用户信息
+  async updateUserInfo(ctx, next) {
+    const {userId} = ctx.params
+    const {name, role} = ctx.request.body
+
+    const result = await userService.updateUserInfo(name, role, userId)
+    ctx.body = {
+      statusCode: 200,
+      message: "用户信息更新成功~",
+      data: result
+    }
+  }
+  // 根据用户id删除用户信息
+  async deleteUserInfo(ctx, next) {
+    const {userId} = ctx.params
+    const result = await userService.deleteUserInfo(userId)
+    ctx.body = {
+      statusCode: 200,
+      message: "用户信息删除成功~",
+      data: result
+    }
+  }
 }
 
 module.exports = new UserController()

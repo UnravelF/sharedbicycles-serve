@@ -20,7 +20,11 @@ class UserService {
   }
   // 获取用户列表
   async getUserListData(offset, size) {
-    const statement = `SELECT  * FROM users LIMIT ?, ?;`;
+    const statement = `
+    SELECT users.id, users.name, role.rolename, users.role_id, users.createAt, users.updateAt
+      FROM users
+      LEFT JOIN role ON users.role_id = role.id
+    LIMIT ?, ?;`;
     const result = await connection.execute(statement, [offset, size])
     return result[0]
   }
@@ -46,6 +50,22 @@ class UserService {
     WHERE users.name LIKE ? AND users.id LIKE ?;
     `;
     const result = await connection.execute(statement, [`%${name}%`, `%${id}%`])
+    return result[0]
+  }
+  // 根据用户id更新用户信息
+  async updateUserInfo(name, role, userId) {
+    const statement = `
+    UPDATE users SET name = ?, role_id = ? WHERE users.id = ?;
+    `;
+    const result = await connection.execute(statement, [name, role, userId])
+    return result[0]
+  }
+  // 根据用户id删除用户信息
+  async deleteUserInfo(userId) {
+    const statement = `
+    DELETE FROM users WHERE users.id = ?;
+    `;
+    const result = await connection.execute(statement, [userId])
     return result[0]
   }
 }
