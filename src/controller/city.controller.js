@@ -94,6 +94,44 @@ class CityController {
       data: result
     }
   }
+  // 新增供应商列表
+  async addSuppliersData(ctx, next) {
+    const {brand} = ctx.request.body
+
+    // 获取角色id
+    const {role_id} = ctx.user
+    // 判断登录用户的角色操作权限
+    if (role_id !== 1) {
+      const error = new Error(errorTypes.NOPERMISSION)
+      return ctx.app.emit('error', error, ctx)
+    }
+
+    const result = await cityService.addSuppliersData(brand)
+    ctx.body = {
+      statusCode: 200,
+      message: "数据新增成功~",
+      data: result
+    }
+  }
+  // 删除供应商列表数据
+  async deleteSupplierData(ctx, next) {
+    // 获取指定删除的供应商id
+    const {supplierId} = ctx.params
+    // 获取角色id
+    const {role_id} = ctx.user
+    // 判断登录用户的角色操作权限
+    if (role_id !== 1) {
+      const error = new Error(errorTypes.NOPERMISSION)
+      return ctx.app.emit('error', error, ctx)
+    }
+
+    const result = await cityService.deleteSupplierData(supplierId)
+    ctx.body = {
+      statusCode: 200,
+      message: "数据删除成功~",
+      data: result
+    }
+  }
 }
 
 module.exports = new CityController()

@@ -64,7 +64,7 @@ class CityService {
     const [result] = await connection.execute(statement, [`%${brand}%`, offset, size])
     return result
   }
-  // 
+  // 条件查询供应商列表总数
   async querySuppliersDataCount(brand) {
     const statement = `
     SELECT COUNT(suppliers.id) count
@@ -72,6 +72,19 @@ class CityService {
     WHERE suppliers.brand LIKE ?;
     `;
     const [result] = await connection.execute(statement, [`%${brand}%`])
+    return result
+  }
+  // 新增供应商数据
+  async addSuppliersData(brand) {
+    const statement = `INSERT INTO suppliers (brand) VALUES (?);`;
+
+    const [result] = await connection.execute(statement, [brand])
+    return result
+  }
+  // 删除指定供应商数据
+  async deleteSupplierData(supplierId) {
+    const statement = `DELETE FROM suppliers WHERE id = ?;`;
+    const [result] = await connection.execute(statement, [supplierId])
     return result
   }
 }

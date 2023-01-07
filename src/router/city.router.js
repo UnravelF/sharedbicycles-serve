@@ -14,17 +14,19 @@ const {
   getSuppliersData,
   getSuppliersCount,
   querySuppliersData,
-  getQuerySuppliersDataCount
+  getQuerySuppliersDataCount,
+  addSuppliersData,
+  deleteSupplierData
 } = require('../controller/city.controller')
 
 // 请求城市点位数据
 cityRouter.get('/city/list', verifyAuth, getCityData)
 
 // 添加城市点位
-cityRouter.post('/', verifyAuth, addCityData)
+cityRouter.post('/city', verifyAuth, addCityData)
 
 // 根据id删除城市点位
-cityRouter.delete('/:cityId', verifyAuth, deleteCityData)
+cityRouter.delete('/city/:cityId', verifyAuth, deleteCityData)
 
 // 请求供应商数据
 cityRouter.get('/suppliers/list', verifyAuth, getSuppliersData)
@@ -34,5 +36,8 @@ cityRouter.get('/suppliers/listCount', verifyAuth, getSuppliersCount)
 cityRouter.post('/suppliers/querylist', verifyAuth, querySuppliersData)
 // 获取条件查询供应商列表总数
 cityRouter.post('/suppliers/querylistCount', verifyAuth, getQuerySuppliersDataCount)
-
+// 新增供应商
+cityRouter.post('/suppliers', verifyAuth, addSuppliersData)
+// 删除供应商
+cityRouter.delete('/suppliers/:supplierId', verifyAuth, deleteSupplierData)
 module.exports = cityRouter
