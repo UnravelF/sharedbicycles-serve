@@ -10,15 +10,22 @@ class BicycleService {
     return result
   }
   // 获取单车设备数据
-  async getBicycleData() {
+  async getBicycleData(offset, size) {
     const statement = `
-    SELECT bicycles.id, bike_id, suppliers.brand '品牌', city.area '开锁点位', lock_status '开锁状态', break_status '是否损坏'
+    SELECT bicycles.id, bike_id, suppliers.brand, city.area, lock_status, break_status
     FROM bicycles
     LEFT JOIN suppliers ON suppliers.id = bicycles.brand_name
     LEFT JOIN city ON city.id = bicycles.put_city
-    GROUP BY bicycles.id ASC;
+    GROUP BY bicycles.id ASC
+    LIMIT ?, ?;
     `;
 
+    const [result] = await connection.execute(statement, [offset, size])
+    return result
+  }
+  // 获取单车设备数据总数
+  async getBicycleDataCount() {
+    const statement = `SELECT COUNT(bicycles.id) 'count' FROM bicycles;`;
     const [result] = await connection.execute(statement)
     return result
   }
