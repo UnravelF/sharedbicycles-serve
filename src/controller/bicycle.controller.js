@@ -37,7 +37,7 @@ class BicycleController {
     const result = await bicycleService.getBicycleData(offset, size)
     ctx.body = {
       statusCode: 200,
-      message: "数据添加成功~",
+      message: "数据查询成功~",
       data: result
     }
   }

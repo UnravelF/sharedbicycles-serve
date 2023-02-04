@@ -12,7 +12,7 @@ class BicycleService {
   // 获取单车设备数据
   async getBicycleData(offset, size) {
     const statement = `
-    SELECT bicycles.id, bike_id, suppliers.brand, city.area, lock_status, break_status
+    SELECT bicycles.id, bike_id, suppliers.brand, city.area, lock_status, break_status, bicycles.createAt, bicycles.updateAt
     FROM bicycles
     LEFT JOIN suppliers ON suppliers.id = bicycles.brand_name
     LEFT JOIN city ON city.id = bicycles.put_city
